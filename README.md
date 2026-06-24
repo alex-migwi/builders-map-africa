@@ -63,13 +63,13 @@ See:
 - `docs/DATA_SCHEMA.md`
 - `docs/ROADMAP.md`
 
-## Suggested repo name
+## Repo name
 
 ```txt
 builders-map-africa
 ```
 
-## Suggested tagline
+## Tagline
 
 ```txt
 An open-source map of Africa’s tech hubs, builder communities, startup spaces, and innovation ecosystems.
