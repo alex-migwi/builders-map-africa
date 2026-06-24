@@ -1,0 +1,21 @@
+{
+  "name": "builders-map-africa",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "An open-source map of African tech hubs, builder communities, startup spaces, and innovation ecosystems. Kenya-first MVP built with Astro, Leaflet and GeoJSON.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "npm run validate:data && astro build",
+    "preview": "astro preview",
+    "validate:data": "node scripts/validate-data.js"
+  },
+  "dependencies": {
+    "@astrojs/check": "latest",
+    "astro": "latest",
+    "leaflet": "latest",
+    "typescript": "latest"
+  },
+  "devDependencies": {}
+}
