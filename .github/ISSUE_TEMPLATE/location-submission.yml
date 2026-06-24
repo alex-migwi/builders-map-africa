@@ -1,0 +1,76 @@
+name: Location submission
+description: Suggest a hub, community, coworking space, accelerator, lab, event or ecosystem resource.
+title: "Add location: "
+labels: ["data", "location-submission"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      description: Official name of the hub, community or resource.
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Tech Hub
+        - Startup Community
+        - Coworking Space
+        - Accelerator
+        - Incubator
+        - University Lab
+        - Makerspace
+        - Open Source Community
+        - Developer Community
+        - Design/Product Community
+        - Investor/Angel Network
+        - Event/Meetup
+        - Training Program
+        - Media/Podcast/Newsletter
+    validations:
+      required: true
+  - type: input
+    id: city
+    attributes:
+      label: City
+    validations:
+      required: true
+  - type: input
+    id: country
+    attributes:
+      label: Country
+    validations:
+      required: true
+  - type: input
+    id: coordinates
+    attributes:
+      label: Coordinates
+      description: Use longitude, latitude format. Example: 36.8219, -1.2921
+    validations:
+      required: true
+  - type: input
+    id: website
+    attributes:
+      label: Official website or social link
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Short description
+    validations:
+      required: true
+  - type: input
+    id: tags
+    attributes:
+      label: Tags
+      description: Comma-separated tags, e.g. startups, community, fintech
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification source
+      description: Link or note showing how this data can be verified.
+    validations:
+      required: true
