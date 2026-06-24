@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Data Schema — Builders Map Africa">
+  <main class="content-page">
+    <a class="back-link" href="/">← Back to map</a>
+    <section class="doc-card">
+      <p class="eyebrow">Data schema</p>
+      <h1>GeoJSON feature format</h1>
+      <p>Each location is stored as a GeoJSON Point feature. Coordinates must use the GeoJSON order: longitude first, then latitude.</p>
+      <pre><code>{`{
+  "type": "Feature",
+  "properties": {
+    "id": "unique-slug",
+    "name": "Location name",
+    "category": "Tech Hub",
+    "city": "Nairobi",
+    "country": "Kenya",
+    "description": "Short useful description.",
+    "website": "https://example.com",
+    "tags": ["startups", "community"],
+    "status": "sample",
+    "last_verified_at": "2026-06-20",
+    "submitted_by": "Builders Space"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [36.8219, -1.2921]
+  }
+}`}</code></pre>
+    </section>
+  </main>
+</BaseLayout>

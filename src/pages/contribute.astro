@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Contribute — Builders Map Africa">
+  <main class="content-page">
+    <a class="back-link" href="/">← Back to map</a>
+    <section class="doc-card">
+      <p class="eyebrow">Contribute</p>
+      <h1>Suggest a hub, community, or ecosystem resource</h1>
+      <p>For the MVP, contributions should be made through GitHub issues or pull requests. This keeps the project open, auditable, and easy to maintain.</p>
+      <h2>Required data</h2>
+      <ul>
+        <li>Name of the hub/community/resource</li>
+        <li>Category</li>
+        <li>City and country</li>
+        <li>Latitude and longitude</li>
+        <li>Official website or social link</li>
+        <li>Short description</li>
+        <li>Tags</li>
+        <li>Verification source</li>
+      </ul>
+      <h2>Contribution options</h2>
+      <p><strong>Simple route:</strong> Open a GitHub issue using the location submission template.</p>
+      <p><strong>Advanced route:</strong> Edit <code>public/data/kenya.geojson</code>, run <code>npm run validate:data</code>, then submit a pull request.</p>
+      <a class="button primary" href="https://github.com/your-org/builders-map-africa/issues/new?template=location-submission.yml" target="_blank" rel="noreferrer">Open submission issue</a>
+    </section>
+  </main>
+</BaseLayout>

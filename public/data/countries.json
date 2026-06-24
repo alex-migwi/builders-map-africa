@@ -1,0 +1,7 @@
+[
+  { "code": "KE", "name": "Kenya", "data": "/data/kenya.geojson", "status": "active" },
+  { "code": "UG", "name": "Uganda", "data": "/data/uganda.geojson", "status": "planned" },
+  { "code": "RW", "name": "Rwanda", "data": "/data/rwanda.geojson", "status": "planned" },
+  { "code": "NG", "name": "Nigeria", "data": "/data/nigeria.geojson", "status": "planned" },
+  { "code": "ZA", "name": "South Africa", "data": "/data/south-africa.geojson", "status": "planned" }
+]

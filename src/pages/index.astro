@@ -1,0 +1,382 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Builders Map Africa">
+  <main class="shell">
+    <aside class="panel" aria-label="Map controls and location list">
+      <a class="brand" href="/" aria-label="Builders Map Africa home">
+        <span class="brand-mark">B</span>
+        <span>
+          <strong>Builders Map Africa</strong>
+          <small>The Builders ecosystem map</small>
+        </span>
+      </a>
+
+      <section class="hero-card">
+        <p class="eyebrow">Open-source ecosystem infrastructure</p>
+        <h1>Mapping the places where African builders gather, learn, launch, and grow.</h1>
+        <p class="intro">An open-source map of Africa’s tech hubs, builder communities, startup spaces, innovation labs, accelerators, maker spaces, university labs, and ecosystem media.. Keep the data public, useful, and community-maintained.</p>
+        <div class="hero-actions">
+          <a href="/contribute" class="button primary">Suggest a location</a>
+          <a href="/about" class="button ghost">How it works</a>
+        </div>
+      </section>
+
+      <section class="controls" aria-label="Search and filter">
+        <label for="search">Search</label>
+        <input id="search" type="search" placeholder="Search name, country, city, category, tag…" />
+
+        <div class="filter-heading">
+          <span>Categories</span>
+          <button id="clearFilters" type="button">Clear</button>
+        </div>
+        <div id="categoryFilters" class="chips" aria-label="Category filters"></div>
+      </section>
+
+      <section class="stats" aria-label="Map summary">
+        <article>
+          <strong id="visibleCount">0</strong>
+          <span>visible</span>
+        </article>
+        <article>
+          <strong id="totalCount">0</strong>
+          <span>mapped</span>
+        </article>
+        <article>
+          <strong>KE</strong>
+          <span>starting country</span>
+        </article>
+      </section>
+
+      <section class="location-list" aria-label="Locations">
+        <div class="list-title">
+          <h2>Locations</h2>
+          <span id="listHint">Click a card to focus the map</span>
+        </div>
+        <div id="locationsList" class="cards"></div>
+        <div id="listLoader" class="list-loading" aria-live="polite"></div>
+        <div id="listEnd" class="list-sentinel" aria-hidden="true"></div>
+      </section>
+    </aside>
+
+    <section class="map-area" aria-label="Interactive map of Kenya tech ecosystem locations">
+      <div class="topbar">
+        <div>
+          <p class="eyebrow">African Builders Ecosystem Map</p>
+          <h2><span id="countryName">Africa</span> ecosystem layer</h2>
+        </div>
+        <a class="github-pill" href="https://github.com/your-org/builders-map-africa" target="_blank" rel="noreferrer">View Github Source</a>
+      </div>
+      <div id="map" class="map"></div>
+      <div class="map-note">
+        <strong>Data note:</strong> Incase coordinates, operating status, and official links have an error reachout to Builders Space or create an issue on github.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    import L from 'leaflet';
+    import 'leaflet/dist/leaflet.css';
+
+    const categoryColors = {
+      'Tech Hub': '#f6c445',
+      'Startup Community': '#4fd1c5',
+      'Coworking Space': '#ff8a5b',
+      'Accelerator': '#a78bfa',
+      'University Lab': '#7dd3fc',
+      'Makerspace': '#f472b6',
+      'Developer Community': '#86efac',
+      'Design/Product Community': '#fda4af',
+      'Media/Podcast/Newsletter': '#fde68a',
+      'Training Program': '#c4b5fd'
+    };
+
+    const AFRICA_COUNTRY_CODES = new Set([
+      'dz','ao','bj','bw','bf','bi','cm','cv','cf','td','km','cg','cd','ci','dj',
+      'eg','gq','er','et','ga','gm','gh','gn','gw','ke','ls','lr','ly','mg','mw',
+      'ml','mr','mu','ma','mz','na','ne','ng','rw','st','sn','sc','sl','so','za',
+      'ss','sd','sz','tg','tn','ug','tz','zm','zw'
+    ]);
+
+    const PAGE_SIZE = 15;
+    const state = {
+      features: [],
+      selectedCategories: new Set(),
+      search: '',
+      markers: [],
+      page: 1
+    };
+    let listObserver;
+    const listLoader = document.querySelector('#listLoader');
+
+    const map = L.map('map', {
+      zoomControl: false,
+      scrollWheelZoom: true
+    }).setView([-0.95, 37.6], 6.4);
+
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    const markerLayer = L.layerGroup().addTo(map);
+
+    // Try to center the map on the user's location (if permission granted)
+    if (typeof navigator !== 'undefined' && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        map.setView([lat, lng], 13, { animate: true });
+
+        // show a subtle user location marker
+        const userMarker = L.circleMarker([lat, lng], {
+          radius: 8,
+          weight: 2,
+          color: '#2563eb',
+          fillColor: '#60a5fa',
+          fillOpacity: 0.9
+        }).addTo(map).bindPopup('Your location');
+        resolveCountryName(lat, lng);
+      }, (err) => {
+        // user denied or error — keep default view
+        console.warn('Geolocation unavailable or denied', err);
+      }, { enableHighAccuracy: true, timeout: 10000 });
+    }
+
+    const escapeHtml = (value = '') => String(value).replace(/[&<>'"]/g, (char) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[char]));
+
+    const setCountryName = (name) => {
+      const title = document.querySelector('#countryName');
+      if (title) title.textContent = name;
+    };
+
+    const resolveCountryName = async (lat, lng) => {
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=3&addressdetails=1`);
+        if (!response.ok) return;
+        const data = await response.json();
+        const countryCode = data?.address?.country_code?.toLowerCase();
+        const country = data?.address?.country;
+        if (countryCode && AFRICA_COUNTRY_CODES.has(countryCode) && country) {
+          setCountryName(country);
+        }
+      } catch (error) {
+        console.warn('Unable to resolve country name', error);
+      }
+    };
+
+    const markerIcon = (category) => {
+      const color = categoryColors[category] || '#ffffff';
+      return L.divIcon({
+        className: 'ecosystem-marker',
+        html: `<span style="--marker-color: ${color}"></span>`,
+        iconSize: [26, 26],
+        iconAnchor: [13, 13],
+        popupAnchor: [0, -16]
+      });
+    };
+
+    const matchesSearch = (feature) => {
+      if (!state.search) return true;
+      const p = feature.properties;
+      const searchable = [p.name, p.category, p.city, p.country, p.description, ...(p.tags || [])].join(' ').toLowerCase();
+      return searchable.includes(state.search.toLowerCase());
+    };
+
+    const matchesCategory = (feature) => {
+      if (state.selectedCategories.size === 0) return true;
+      return state.selectedCategories.has(feature.properties.category);
+    };
+
+    const getVisibleFeatures = () => state.features.filter((feature) => matchesSearch(feature) && matchesCategory(feature));
+
+    const popupHtml = (feature) => {
+      const p = feature.properties;
+      const tags = (p.tags || []).map((tag) => `<span>${escapeHtml(tag)}</span>`).join('');
+      const website = p.website ? `<a href="${escapeHtml(p.website)}" target="_blank" rel="noreferrer">Visit link</a>` : '';
+      return `
+        <article class="popup-card">
+          <p class="popup-category">${escapeHtml(p.category)} · ${escapeHtml(p.status)}</p>
+          <h3>${escapeHtml(p.name)}</h3>
+          <p>${escapeHtml(p.description)}</p>
+          <p class="popup-place">${escapeHtml(p.city)}, ${escapeHtml(p.country)}</p>
+          <div class="popup-tags">${tags}</div>
+          ${website}
+        </article>
+      `;
+    };
+
+    const renderMarkers = () => {
+      markerLayer.clearLayers();
+      state.markers = [];
+
+      getVisibleFeatures().forEach((feature) => {
+        const [lng, lat] = feature.geometry.coordinates;
+        const marker = L.marker([lat, lng], { icon: markerIcon(feature.properties.category) })
+          .bindPopup(popupHtml(feature), { maxWidth: 320 })
+          .addTo(markerLayer);
+        marker.featureId = feature.properties.id;
+        state.markers.push(marker);
+      });
+    };
+
+    const addNewMarkers = (startIndex = 0) => {
+      const visible = getVisibleFeatures();
+      const existingIds = new Set(state.markers.map((m) => m.featureId));
+      
+      visible.forEach((feature, index) => {
+        if (index >= startIndex && !existingIds.has(feature.properties.id)) {
+          const [lng, lat] = feature.geometry.coordinates;
+          const marker = L.marker([lat, lng], { icon: markerIcon(feature.properties.category) })
+            .bindPopup(popupHtml(feature), { maxWidth: 320 })
+            .addTo(markerLayer);
+          marker.featureId = feature.properties.id;
+          state.markers.push(marker);
+        }
+      });
+    };
+
+    const focusFeature = (id) => {
+      const feature = state.features.find((item) => item.properties.id === id);
+      if (!feature) return;
+      const [lng, lat] = feature.geometry.coordinates;
+      map.flyTo([lat, lng], 13);
+      setTimeout(() => {
+        const marker = state.markers.find((item) => item.featureId === id);
+        if (marker) marker.openPopup();
+      }, 300);
+    };
+
+    const getPagedFeatures = (features) => features.slice(0, state.page * PAGE_SIZE);
+
+    const updateListHint = (visibleLength, shownLength) => {
+      const hint = document.querySelector('#listHint');
+      if (!hint) return;
+      if (visibleLength === 0) {
+        hint.textContent = 'No locations match this filter.';
+      } else if (shownLength < visibleLength) {
+        hint.textContent = 'Scroll for more locations.';
+      } else {
+        hint.textContent = 'Click a card to focus the map.';
+      }
+    };
+
+    const renderList = () => {
+      const list = document.querySelector('#locationsList');
+      const visible = getVisibleFeatures();
+      const shown = getPagedFeatures(visible);
+      if (visible.length === 0) {
+        list.innerHTML = '<p class="empty">No matching locations yet. Try clearing filters or suggest a new entry.</p>';
+      } else {
+        list.innerHTML = shown.map((feature) => {
+          const p = feature.properties;
+          const tags = (p.tags || []).slice(0, 3).map((tag) => `<span>${escapeHtml(tag)}</span>`).join('');
+          return `
+            <button class="location-card" data-id="${escapeHtml(p.id)}" type="button">
+              <span class="card-kicker">${escapeHtml(p.category)} · ${escapeHtml(p.status)}</span>
+              <strong>${escapeHtml(p.name)}</strong>
+              <small>${escapeHtml(p.city)}, ${escapeHtml(p.country)}</small>
+              <p>${escapeHtml(p.description)}</p>
+              <span class="tag-row">${tags}</span>
+            </button>
+          `;
+        }).join('');
+      }
+
+      if (listLoader) {
+        listLoader.textContent = shown.length < visible.length ? 'Loading more locations…' : '';
+      }
+
+      document.querySelectorAll('.location-card').forEach((card) => {
+        card.addEventListener('click', () => focusFeature(card.dataset.id));
+      });
+
+      updateListHint(visible.length, shown.length);
+      document.querySelector('#visibleCount').textContent = visible.length;
+      document.querySelector('#totalCount').textContent = state.features.length;
+    };
+
+    const initInfiniteLoader = () => {
+      const root = document.querySelector('.panel');
+      const sentinel = document.querySelector('#listEnd');
+      if (!root || !sentinel || typeof IntersectionObserver === 'undefined') return;
+
+      if (listObserver) {
+        listObserver.disconnect();
+      }
+
+      listObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const visible = getVisibleFeatures();
+          if (entry.isIntersecting && state.page * PAGE_SIZE < visible.length) {
+            const prevIndex = (state.page - 1) * PAGE_SIZE;
+            state.page += 1;
+            addNewMarkers(prevIndex);
+            renderList();
+          }
+        });
+      }, {
+        root,
+        rootMargin: '0px 0px 120px 0px',
+        threshold: 0.1
+      });
+      listObserver.observe(sentinel);
+    };
+
+    const renderFilters = () => {
+      const container = document.querySelector('#categoryFilters');
+      const categories = [...new Set(state.features.map((feature) => feature.properties.category))].sort();
+      container.innerHTML = categories.map((category) => `
+        <button class="chip ${state.selectedCategories.has(category) ? 'active' : ''}" type="button" data-category="${escapeHtml(category)}">
+          <span style="--chip-color:${categoryColors[category] || '#ffffff'}"></span>${escapeHtml(category)}
+        </button>
+      `).join('');
+
+      document.querySelectorAll('.chip').forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const category = chip.dataset.category;
+          if (state.selectedCategories.has(category)) state.selectedCategories.delete(category);
+          else state.selectedCategories.add(category);
+          state.page = 1;
+          render();
+        });
+      });
+    };
+
+    const render = () => {
+      renderFilters();
+      renderMarkers();
+      renderList();
+    };
+
+    document.querySelector('#search').addEventListener('input', (event) => {
+      state.search = event.target.value.trim();
+      state.page = 1;
+      renderMarkers();
+      renderList();
+    });
+
+    document.querySelector('#clearFilters').addEventListener('click', () => {
+      state.selectedCategories.clear();
+      state.search = '';
+      document.querySelector('#search').value = '';
+      render();
+    });
+
+    fetch('/data/kenya.geojson')
+      .then((response) => response.json())
+      .then((data) => {
+        state.features = data.features;
+        render();
+        initInfiniteLoader();
+      })
+      .catch((error) => {
+        console.error('Unable to load Kenya GeoJSON data', error);
+        document.querySelector('#locationsList').innerHTML = '<p class="empty">Unable to load map data.</p>';
+      });
+  </script>
+</BaseLayout>

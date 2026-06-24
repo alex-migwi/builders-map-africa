@@ -1,0 +1,216 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "name": "Builders Map Africa — Kenya MVP",
+    "country": "Kenya",
+    "status": "starter-sample-data",
+    "updated_at": "2026-06-20",
+    "notice": "Sample MVP data. Verify coordinates, status and official links before publishing as authoritative."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ihub-nairobi",
+        "name": "iHub",
+        "category": "Tech Hub",
+        "city": "Nairobi",
+        "country": "Kenya",
+        "description": "A Nairobi innovation and technology community space frequently associated with startups, builders, events and ecosystem convening.",
+        "website": "https://ihub.co.ke",
+        "tags": ["startups", "community", "innovation"],
+        "status": "sample",
+        "last_verified_at": "2026-06-20",
+        "submitted_by": "Builders Space"
+      },
+      "geometry": { "type": "Point", "coordinates": [36.7892, -1.3005] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "nailab-nairobi",
+        "name": "Nailab",
+        "category": "Accelerator",
+        "city": "Nairobi",
+        "country": "Kenya",
+        "description": "Startup support and acceleration ecosystem organization for early-stage entrepreneurs and ventures.",
+        "website": "https://nailab.co.ke",
+        "tags": ["accelerator", "entrepreneurship", "startups"],
+        "status": "sample",
+        "last_verified_at": "2026-06-20",
+        "submitted_by": "Builders Space"
+      },
+      "geometry": { "type": "Point", "coordinates": [36.8065, -1.2878] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "nairobi-garage",
+        "name": "Nairobi Garage",
+        "category": "Coworking Space",
+        "city": "Nairobi",
+        "country": "Kenya",
+        "description": "Coworking and flexible office space used by startups, founders, teams and remote operators.",
+        "website": "https://nairobigarage.com",
+        "tags": ["coworking", "startups", "workspace"],
+        "status": "sample",
+        "last_verified_at": "2026-06-20",
+        "submitted_by": "Builders Space"
+      },
+      "geometry": { "type": "Point", "coordinates": [36.7907, -1.2951] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "gearbox-nairobi",
+        "name": "Gearbox",
+        "category": "Makerspace",
+        "city": "Nairobi",
+        "country": "Kenya",
+        "description": "Hardware, prototyping and maker ecosystem space for builders working on physical products and manufacturing-oriented innovation.",
+        "website": "https://www.gearbox.co.ke",
+        "tags": ["hardware", "makers", "prototyping"],
+        "status": "sample",
+        "last_verified_at": "2026-06-20",
+        "submitted_by": "Builders Space"
+      },
+      "geometry": { "type": "Point", "coordinates": [36.8808, -1.3221] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "lakehub-kisumu",
+        "name": "LakeHub",
+        "category": "Tech Hub",
+        "city": "Kisumu",
+        "country": "Kenya",
+        "description": "Western Kenya technology hub and community space supporting local innovators, developers and entrepreneurs.",
+        "website": "https://lakehub.co.ke",
+        "tags": ["western-kenya", "community", "startups"],
+        "status": "sample",
+        "last_verified_at": "2026-06-20",
+        "submitted_by": "Builders Space"
+      },
+      "geometry": { "type": "Point", "coordinates": [34.7617, -0.0917] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "swahilibox-mombasa",
+        "name": "SwahiliBox",
+        "category": "Tech Hub",
+        "city": "Mombasa",
+        "country": "Kenya",
+        "description": "Coastal Kenya technology hub and community space supporting digital skills, innovation and entrepreneurship.",
+        "website": "https://swahilibox.co.ke",
+        "tags": ["coast", "community", "digital-skills"],
+        "status": "sample",
+        "last_verified_at": "2026-06-20",
+        "submitted_by": "Builders Space"
+      },
+      "geometry": { "type": "Point", "coordinates": [39.6682, -4.0435] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "eldohub-eldoret",
+        "name": "EldoHub",
+        "category": "Tech Hub",
+        "city": "Eldoret",
+        "country": "Kenya",
+        "description": "Eldoret-based innovation hub supporting young people, technology skills, entrepreneurship and local ecosystem building.",
+        "website": "https://eldohub.co.ke",
+        "tags": ["rift-valley", "skills", "entrepreneurship"],
+        "status": "sample",
+        "last_verified_at": "2026-06-20",
+        "submitted_by": "Builders Space"
+      },
+      "geometry": { "type": "Point", "coordinates": [35.2698, 0.5143] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "strathmore-ilabafrica",
+        "name": "@iLabAfrica",
+        "category": "University Lab",
+        "city": "Nairobi",
+        "country": "Kenya",
+        "description": "Strathmore University research and innovation lab connected to ICT research, training, enterprise solutions and digital innovation.",
+        "website": "https://ilabafrica.ac.ke",
+        "tags": ["university", "research", "innovation"],
+        "status": "sample",
+        "last_verified_at": "2026-06-20",
+        "submitted_by": "Builders Space"
+      },
+      "geometry": { "type": "Point", "coordinates": [36.8139, -1.3096] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "kamiliimu-nairobi",
+        "name": "KamiLimu",
+        "category": "Training Program",
+        "city": "Nairobi",
+        "country": "Kenya",
+        "description": "Mentorship and structured learning program for computer science and technology students in Kenya.",
+        "website": "https://kamilimu.org",
+        "tags": ["mentorship", "students", "training"],
+        "status": "sample",
+        "last_verified_at": "2026-06-20",
+        "submitted_by": "Builders Space"
+      },
+      "geometry": { "type": "Point", "coordinates": [36.8219, -1.2921] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "devs-in-vogue-nairobi",
+        "name": "Devs in Vogue Kenya Circle",
+        "category": "Developer Community",
+        "city": "Nairobi",
+        "country": "Kenya",
+        "description": "Sample entry for a developer community chapter/circle model. Replace with verified Kenya-specific community data before publishing.",
+        "website": "https://devsinvogue.org",
+        "tags": ["developers", "women-in-tech", "community"],
+        "status": "sample-unverified",
+        "last_verified_at": "2026-06-20",
+        "submitted_by": "Builders Space"
+      },
+      "geometry": { "type": "Point", "coordinates": [36.8219, -1.2858] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ux-kenya-nairobi",
+        "name": "UX Kenya Community",
+        "category": "Design/Product Community",
+        "city": "Nairobi",
+        "country": "Kenya",
+        "description": "Sample design and product community entry for mapping non-code builder communities in the ecosystem.",
+        "website": "https://www.linkedin.com",
+        "tags": ["design", "product", "community"],
+        "status": "sample-unverified",
+        "last_verified_at": "2026-06-20",
+        "submitted_by": "Builders Space"
+      },
+      "geometry": { "type": "Point", "coordinates": [36.8147, -1.2833] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "builders-space-nairobi",
+        "name": "Builders Space",
+        "category": "Media/Podcast/Newsletter",
+        "city": "Nairobi",
+        "country": "Kenya",
+        "description": "A growth ecosystem and weekly conversation platform for African builders moving from ideas and skills into products, ventures and market opportunities.",
+        "website": "https://x.com",
+        "tags": ["builders", "media", "startup-ecosystem"],
+        "status": "sample",
+        "last_verified_at": "2026-06-20",
+        "submitted_by": "Builders Space"
+      },
+      "geometry": { "type": "Point", "coordinates": [36.8219, -1.2921] }
+    }
+  ]
+}
